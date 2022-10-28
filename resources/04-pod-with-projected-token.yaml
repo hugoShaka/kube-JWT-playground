@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-projected-token
+  namespace: test-jwts
+spec:
+  containers:
+  - name: debian
+    image: debian
+    command:
+      - sleep
+      - "36000"
+    volumeMounts:
+    - mountPath: /var/run/secrets/tokens
+      name: my-token
+  automountServiceAccountToken: false
+  serviceAccountName: test-sa
+  volumes:
+  - name: my-token
+    projected:
+      sources:
+      - serviceAccountToken:
+          path: my-token
+          expirationSeconds: 7200
